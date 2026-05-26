@@ -9,6 +9,7 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "KingOfTheHill.h"
+#include "PlayerState/KOTHPlayerState.h"
 
 AKingOfTheHillCharacter::AKingOfTheHillCharacter()
 {
@@ -117,4 +118,32 @@ void AKingOfTheHillCharacter::DoJumpEnd()
 {
 	// pass StopJumping to the character
 	StopJumping();
+}
+
+//=============== Game ===============
+void AKingOfTheHillCharacter::StartAddPoints()
+{
+	GetWorldTimerManager().SetTimer(
+		PointTimerHandle,
+		this,
+		&AKingOfTheHillCharacter::AddPoint,
+		1.0f,
+		true
+	);
+}
+
+void AKingOfTheHillCharacter::CancelAddPoints()
+{
+	GetWorldTimerManager().ClearTimer(PointTimerHandle);
+}
+
+void AKingOfTheHillCharacter::AddPoint()
+{
+	AKOTHPlayerState* PS = GetPlayerState<AKOTHPlayerState>();
+
+	if (PS)
+	{
+		PS->AddPoint();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan,FString::Printf(TEXT("%i"), PS->ScorePoints));
+	}
 }

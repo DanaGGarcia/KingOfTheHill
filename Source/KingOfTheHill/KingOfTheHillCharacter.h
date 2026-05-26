@@ -90,5 +90,15 @@ public:
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+public:
+	
+	FTimerHandle PointTimerHandle;
+
+	void AddPoint();
+
+	void StartAddPoints();
+	
+	void CancelAddPoints();
+
 };
 
