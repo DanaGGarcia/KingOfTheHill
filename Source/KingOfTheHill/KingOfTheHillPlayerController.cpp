@@ -8,6 +8,7 @@
 #include "KingOfTheHillCameraManager.h"
 #include "Blueprint/UserWidget.h"
 #include "KingOfTheHill.h"
+#include "Widget/HUDPlayer.h"
 #include "Widgets/Input/SVirtualJoystick.h"
 
 AKingOfTheHillPlayerController::AKingOfTheHillPlayerController()
@@ -19,7 +20,18 @@ AKingOfTheHillPlayerController::AKingOfTheHillPlayerController()
 void AKingOfTheHillPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	//==========Widget=============
+	if (!IsLocalController())return;
 
+	if (HUDPlayerWidgetClass)
+	{
+		HUDPlayerWidget = CreateWidget<UHUDPlayer>(this, HUDPlayerWidgetClass);
+		if (HUDPlayerWidget)
+		{
+			HUDPlayerWidget->AddToViewport(0);
+		}
+	}
 	
 	// only spawn touch controls on local player controllers
 	if (ShouldUseTouchControls() && IsLocalPlayerController())

@@ -22,8 +22,6 @@ public:
 
 	virtual void StartMatch() override;
 
-	FTimerHandle MatchTimer;
-
 	FTimerHandle StartMatchTimer;
 
 	float MatchTime;
@@ -31,8 +29,5 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float MatchStart = 3;
 
-	void UpdateTimer();
-
 	void EndMatch();
-	
 };

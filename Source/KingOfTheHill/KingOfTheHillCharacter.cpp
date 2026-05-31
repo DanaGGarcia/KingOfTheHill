@@ -9,7 +9,9 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "KingOfTheHill.h"
+#include "GameState/KOTHGameState.h"
 #include "PlayerState/KOTHPlayerState.h"
+
 
 AKingOfTheHillCharacter::AKingOfTheHillCharacter()
 {
@@ -121,29 +123,32 @@ void AKingOfTheHillCharacter::DoJumpEnd()
 }
 
 //=============== Game ===============
-void AKingOfTheHillCharacter::StartAddPoints()
-{
-	GetWorldTimerManager().SetTimer(
-		PointTimerHandle,
-		this,
-		&AKingOfTheHillCharacter::AddPoint,
-		1.0f,
-		true
-	);
-}
+ void AKingOfTheHillCharacter::StartAddPoints()
+ {
+ 	GetWorldTimerManager().SetTimer(
+ 		PointTimerHandle,
+ 		this,
+ 		&AKingOfTheHillCharacter::AddPoint,
+ 		1.0f,
+ 		true
+ 	);
+ }
 
-void AKingOfTheHillCharacter::CancelAddPoints()
-{
-	GetWorldTimerManager().ClearTimer(PointTimerHandle);
-}
+ void AKingOfTheHillCharacter::CancelAddPoints()
+ {
+ 	GetWorldTimerManager().ClearTimer(PointTimerHandle);
+ }
 
-void AKingOfTheHillCharacter::AddPoint()
-{
-	AKOTHPlayerState* PS = GetPlayerState<AKOTHPlayerState>();
-
-	if (PS)
+ void AKingOfTheHillCharacter::AddPoint()
+ {
+	AKOTHGameState* GS = GetWorld()->GetGameState<AKOTHGameState>();
+	if (GS && GetPlayerState())
 	{
-		PS->AddPoint();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan,FString::Printf(TEXT("%i"), PS->ScorePoints));
+		GS->AwardPointToPlayer(GetPlayerState());
 	}
+ }
+
+void AKingOfTheHillCharacter::DisableCharacterMovement()
+{
+	GetCharacterMovement()->DisableMovement();
 }

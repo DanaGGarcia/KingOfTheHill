@@ -23,6 +23,4 @@ public:
 	void AddPoint();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	
 };

@@ -93,12 +93,13 @@ public:
 public:
 	
 	FTimerHandle PointTimerHandle;
-
+	
 	void AddPoint();
-
+	
 	void StartAddPoints();
 	
 	void CancelAddPoints();
 
+	void DisableCharacterMovement();
 };
 

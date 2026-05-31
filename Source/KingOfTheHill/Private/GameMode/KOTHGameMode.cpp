@@ -31,62 +31,34 @@ void AKOTHGameMode::BeginPlay()
 void AKOTHGameMode::StartMatch()
 {
 	Super::StartMatch();
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f,FColor::Red, TEXT("KOTHGameMode::StartMatch()"));
+		
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("KOTHGameMode::StartMatch()"));
 
 	AKOTHGameState* GS = GetGameState<AKOTHGameState>();
-
 	if (GS)
 	{
 		GS->RemainingTime = MatchTime;
+		GS->StartGameClock(); 
 	}
-
-	GetWorldTimerManager().SetTimer(
-		MatchTimer,
-		this,
-		&AKOTHGameMode::UpdateTimer,
-		1.0f,
-		true
-	);
-}
-
-void AKOTHGameMode::UpdateTimer()
-{
-	AKOTHGameState* GS = GetGameState<AKOTHGameState>();
-
-	if (!GS) return;
-
-	if (GS->RemainingTime <= 0)
-	{
-		EndMatch();
-		return;
-	}
-	
-	GS->RemainingTime--;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%i"),GS->RemainingTime));
-	
-	
 }
 
 void AKOTHGameMode::EndMatch()
 {
-	GetWorldTimerManager().ClearTimer(MatchTimer);
-
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "EndMatch");
 
-	//Freno los puntos
-	TArray<AActor*> Characters;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(),AKingOfTheHillCharacter::StaticClass(),Characters);
-	for (AActor* Actor : Characters)
+	TArray<AActor*> AllCharacters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AKingOfTheHillCharacter::StaticClass(), AllCharacters);
+
+	//desactivo movimiento
+	for (AActor* Actor : AllCharacters)
 	{
 		AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(Actor);
-
 		if (Character)
 		{
-			Character->CancelAddPoints();
+			Character->DisableCharacterMovement();
 		}
 	}
-
+	
 	//Declaro ganador
 	AKOTHPlayerState* Winner = nullptr;
 	bool bEmpate = false;
@@ -134,4 +106,6 @@ void AKOTHGameMode::EndMatch()
 
 		GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Green,WinnerText);
 	}
+
+	RestartGame();
 }

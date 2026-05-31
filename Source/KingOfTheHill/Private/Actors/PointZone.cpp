@@ -3,10 +3,13 @@
 
 #include "Public/Actors/PointZone.h"
 
+#include "GameState/KOTHGameState.h"
 #include "KingOfTheHillCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameMode/KOTHGameMode.h"
 
+
+class AKOTHGameState;
 
 // Sets default values
 APointZone::APointZone()
@@ -38,8 +41,7 @@ void APointZone::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if (!HasAuthority()) return;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Overlap");
-
+	
 	AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(OtherActor);
 	if (Character)
 	{
@@ -51,16 +53,10 @@ void APointZone::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
 	if (!HasAuthority()) return;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "EndOverlap");
-	
+
 	AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(OtherActor);
 	if (Character)
 	{
 		Character->CancelAddPoints();
 	}
-	
 }
-
-
-
-

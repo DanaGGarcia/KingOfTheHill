@@ -9,6 +9,10 @@
 /**
  * 
  */
+
+class AKOTHGameMode;
+class AKOTHPlayerState;
+
 UCLASS()
 class KINGOFTHEHILL_API AKOTHGameState : public AGameState
 {
@@ -20,4 +24,12 @@ public:
 	
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	int32 RemainingTime;
+	
+	void StartGameClock();
+	
+	void AwardPointToPlayer(APlayerState* TargetPlayer);
+	
+	FTimerHandle GameClockTimerHandle;
+
+	void AdvanceClock();
 };

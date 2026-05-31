@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "KingOfTheHillPlayerController.generated.h"
 
+class UHUDPlayer;
 class UInputMappingContext;
 class UUserWidget;
 
@@ -54,4 +55,11 @@ protected:
 
 	/** Returns true if the player should use UMG touch controls */
 	bool ShouldUseTouchControls() const;
+
+	//=======Widget========
+	UPROPERTY(EditAnywhere, Category="Widget")
+	TSubclassOf<UUserWidget> HUDPlayerWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UHUDPlayer> HUDPlayerWidget;
 };
