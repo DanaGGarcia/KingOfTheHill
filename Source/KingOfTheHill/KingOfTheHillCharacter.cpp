@@ -9,6 +9,7 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "KingOfTheHill.h"
+#include "Components/BoxComponent.h"
 #include "GameState/KOTHGameState.h"
 #include "PlayerState/KOTHPlayerState.h"
 
@@ -45,6 +46,13 @@ AKingOfTheHillCharacter::AKingOfTheHillCharacter()
 	// Configure character movement
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 	GetCharacterMovement()->AirControl = 0.5f;
+
+	//=============Game============
+	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwordMesh"));
+	SwordMesh->SetupAttachment(GetMesh(), FName("SwordSocket"));
+
+	MeleeDetector = CreateDefaultSubobject<UBoxComponent>(TEXT("MeleeDetector"));
+	MeleeDetector->SetupAttachment(SwordMesh);
 }
 
 void AKingOfTheHillCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -151,4 +159,47 @@ void AKingOfTheHillCharacter::DoJumpEnd()
 void AKingOfTheHillCharacter::DisableCharacterMovement()
 {
 	GetCharacterMovement()->DisableMovement();
+}
+
+void AKingOfTheHillCharacter::Push()
+{
+	Multicast_EmpujeAnimation();
+	
+	GetWorldTimerManager().SetTimer(
+		TimerAttack,
+		this,
+		&AKingOfTheHillCharacter::Server_Empuje,
+		0.35f,
+		false);
+	
+}
+
+void AKingOfTheHillCharacter::Server_Empuje_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Empujo");
+	TArray<AActor*> HitActors;
+	MeleeDetector->GetOverlappingActors(HitActors);
+
+	for (AActor* Actor : HitActors)
+	{
+		if (Actor && Actor != this)
+		{
+			AKingOfTheHillCharacter* OtherCharacter =Cast<AKingOfTheHillCharacter>(Actor);
+
+			if (OtherCharacter)
+			{
+				FVector Direccion =(OtherCharacter->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+
+				OtherCharacter->LaunchCharacter(Direccion * PushForce,true,true);
+			}
+		}
+	}
+}
+
+void AKingOfTheHillCharacter::Multicast_EmpujeAnimation_Implementation()
+{
+	if (AttackMontageMelee)
+	{
+		PlayAnimMontage(AttackMontageMelee);
+	}
 }

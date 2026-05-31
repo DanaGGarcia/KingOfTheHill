@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "KingOfTheHillCharacter.generated.h"
 
+class UBoxComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -101,5 +102,28 @@ public:
 	void CancelAddPoints();
 
 	void DisableCharacterMovement();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<UStaticMeshComponent> SwordMesh;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<UBoxComponent> MeleeDetector;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float PushForce = 1500.0f;
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void Push();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Combat")
+	void Server_Empuje();
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Combat")
+	void Multicast_EmpujeAnimation();
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UAnimMontage* AttackMontageMelee;
+
+	FTimerHandle TimerAttack;
 };
 

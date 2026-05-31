@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "KingOfTheHillPlayerController.generated.h"
 
+class UInputAction;
 class UHUDPlayer;
 class UInputMappingContext;
 class UUserWidget;
@@ -62,4 +63,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UHUDPlayer> HUDPlayerWidget;
+
+	UPROPERTY(EditAnywhere, Category ="Input")
+	UInputAction* AttackAction;
+	
+	void Attack();
 };

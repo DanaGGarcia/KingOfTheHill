@@ -2,12 +2,15 @@
 
 
 #include "KingOfTheHillPlayerController.h"
+
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "InputMappingContext.h"
 #include "KingOfTheHillCameraManager.h"
 #include "Blueprint/UserWidget.h"
 #include "KingOfTheHill.h"
+#include "KingOfTheHillCharacter.h"
 #include "Widget/HUDPlayer.h"
 #include "Widgets/Input/SVirtualJoystick.h"
 
@@ -77,6 +80,11 @@ void AKingOfTheHillPlayerController::SetupInputComponent()
 				}
 			}
 		}
+
+		if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
+		{
+			EIC->BindAction(AttackAction, ETriggerEvent::Started, this, &AKingOfTheHillPlayerController::Attack);
+		}
 	}
 	
 }
@@ -85,4 +93,15 @@ bool AKingOfTheHillPlayerController::ShouldUseTouchControls() const
 {
 	// are we on a mobile platform? Should we force touch?
 	return SVirtualJoystick::ShouldDisplayTouchInterface() || bForceTouchControls;
+}
+
+
+
+void AKingOfTheHillPlayerController::Attack()
+{
+	AKingOfTheHillCharacter* MYCharacter = Cast<AKingOfTheHillCharacter>(GetPawn());
+	if (MYCharacter)
+	{
+		MYCharacter->Push();
+	}
 }
