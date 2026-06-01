@@ -112,8 +112,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float PushForce = 1500.0f;
 
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void Push();
+	UFUNCTION(BlueprintCallable,Server, Reliable, Category = "Combat")
+	void Server_Push();
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Combat")
 	void Server_Empuje();

@@ -161,7 +161,7 @@ void AKingOfTheHillCharacter::DisableCharacterMovement()
 	GetCharacterMovement()->DisableMovement();
 }
 
-void AKingOfTheHillCharacter::Push()
+void AKingOfTheHillCharacter::Server_Push_Implementation()
 {
 	Multicast_EmpujeAnimation();
 	
@@ -194,6 +194,7 @@ void AKingOfTheHillCharacter::Server_Empuje_Implementation()
 			}
 		}
 	}
+	
 }
 
 void AKingOfTheHillCharacter::Multicast_EmpujeAnimation_Implementation()

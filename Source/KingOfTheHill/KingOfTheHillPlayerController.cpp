@@ -102,6 +102,6 @@ void AKingOfTheHillPlayerController::Attack()
 	AKingOfTheHillCharacter* MYCharacter = Cast<AKingOfTheHillCharacter>(GetPawn());
 	if (MYCharacter)
 	{
-		MYCharacter->Push();
+		MYCharacter->Server_Push();
 	}
 }
