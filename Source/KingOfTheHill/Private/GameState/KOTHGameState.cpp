@@ -16,6 +16,8 @@ void AKOTHGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AKOTHGameState, RemainingTime);
+
+	DOREPLIFETIME(AKOTHGameState, WinnerText);
 }
 
 void AKOTHGameState::StartGameClock()
@@ -49,10 +51,7 @@ void AKOTHGameState::AdvanceClock()
 			}
 		}
 		
-		if (AKOTHGameMode* GM = Cast<AKOTHGameMode>(GetWorld()->GetAuthGameMode()))
-		{
-			GM->EndMatch();
-		}
+		EndMatch();
 	}
 }
 
@@ -67,3 +66,55 @@ void AKOTHGameState::AwardPointToPlayer(APlayerState* TargetPlayer)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Puntos: %i"), PS->ScorePoints));
 	}
 }
+
+void AKOTHGameState::EndMatch()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "EndMatch");
+
+	TArray<AActor*> AllCharacters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AKingOfTheHillCharacter::StaticClass(), AllCharacters);
+
+	//desactivo movimiento
+	for (AActor* Actor : AllCharacters)
+	{
+		AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(Actor);
+		if (Character)
+		{
+			Character->DisableCharacterMovement();
+		}
+	}
+	
+	//Declaro ganador
+	AKOTHPlayerState* Winner = nullptr;
+	bool bEmpate = false;
+	int32 BestScore = 0;
+
+	for (APlayerState* PS : PlayerArray)
+	{
+		AKOTHPlayerState* KOTHPS = Cast<AKOTHPlayerState>(PS);
+
+		if (!KOTHPS) continue;
+       
+		if (KOTHPS->ScorePoints > BestScore)
+		{
+			BestScore = KOTHPS->ScorePoints;
+			Winner = KOTHPS;
+			bEmpate = false;
+		}
+		else if (KOTHPS->ScorePoints == BestScore && BestScore > 0)
+		{
+			bEmpate = true;
+		}
+	}
+	
+
+	if (bEmpate || Winner == nullptr)
+	{
+		WinnerText = "Empate!";
+	}
+	else
+	{
+		WinnerText = FString::Printf(TEXT("¡El ganador es: %s!"),*Winner->GetPlayerName());
+	}
+}
+

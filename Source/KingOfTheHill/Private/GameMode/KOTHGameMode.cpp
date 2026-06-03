@@ -4,15 +4,18 @@
 #include "Public/GameMode/KOTHGameMode.h"
 
 #include "KingOfTheHillCharacter.h"
+#include "KingOfTheHillPlayerController.h"
 #include "GameState/KOTHGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerState/KOTHPlayerState.h"
+
+class AKingOfTheHillPlayerController;
 
 AKOTHGameMode::AKOTHGameMode()
 {
 	bDelayedStart = true;
 
-	MatchTime = 200;
+	MatchTime = 20;
 }
 
 void AKOTHGameMode::BeginPlay()
@@ -40,72 +43,4 @@ void AKOTHGameMode::StartMatch()
 		GS->RemainingTime = MatchTime;
 		GS->StartGameClock(); 
 	}
-}
-
-void AKOTHGameMode::EndMatch()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "EndMatch");
-
-	TArray<AActor*> AllCharacters;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AKingOfTheHillCharacter::StaticClass(), AllCharacters);
-
-	//desactivo movimiento
-	for (AActor* Actor : AllCharacters)
-	{
-		AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(Actor);
-		if (Character)
-		{
-			Character->DisableCharacterMovement();
-		}
-	}
-	
-	//Declaro ganador
-	AKOTHPlayerState* Winner = nullptr;
-	bool bEmpate = false;
-	int32 BestScore = 0;
-	int32 PlayerNumber = 0;
-	int32 WinnerNumber = -1;
-
-	for (APlayerState* PS : GameState->PlayerArray)
-	{
-		AKOTHPlayerState* KOTHPS = Cast<AKOTHPlayerState>(PS);
-
-		if (!KOTHPS) continue;
-		
-		if (KOTHPS->ScorePoints > BestScore)
-		{
-			BestScore = KOTHPS->ScorePoints;
-			Winner = KOTHPS;
-			WinnerNumber = PlayerNumber;
-			bEmpate = false;
-		}
-		else if (KOTHPS->ScorePoints == BestScore && Winner)
-		{
-			bEmpate = true;
-		}
-
-		PlayerNumber++;
-	}
-
-	if (bEmpate)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Empate!"));
-	}
-	else
-	{
-		FString WinnerText;
-
-		if (WinnerNumber == 0)
-		{
-			WinnerText = "Gano el Servidor";
-		}
-		else
-		{
-			WinnerText = FString::Printf(TEXT("Gano el Cliente %i"),WinnerNumber);
-		}
-
-		GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Green,WinnerText);
-	}
-
-	RestartGame();
 }

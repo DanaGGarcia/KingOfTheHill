@@ -10,6 +10,7 @@
  * 
  */
 
+class UImage;
 class UTextBlock;
 class UVerticalBox;
 
@@ -35,4 +36,10 @@ public:
 	FTimerHandle UpdateListTimer;
 
 	void UpdatePlayerList();
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> WinnerText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> ImageWinner;
 };

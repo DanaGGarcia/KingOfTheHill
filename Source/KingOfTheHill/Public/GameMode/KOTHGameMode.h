@@ -28,6 +28,4 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float MatchStart = 3;
-
-	void EndMatch();
 };

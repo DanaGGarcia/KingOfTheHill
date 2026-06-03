@@ -32,4 +32,10 @@ public:
 	FTimerHandle GameClockTimerHandle;
 
 	void AdvanceClock();
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	FString WinnerText;
+
+	UFUNCTION()
+	void EndMatch();
 };
