@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "KingOfTheHillPlayerController.generated.h"
 
+class USwitcher;
 class UInputAction;
 class UHUDPlayer;
 class UInputMappingContext;
@@ -25,6 +26,9 @@ public:
 
 	/** Constructor */
 	AKingOfTheHillPlayerController();
+
+	UFUNCTION(Client, Reliable)
+	void Client_IniciarPartidaVisual();
 
 protected:
 
@@ -59,13 +63,15 @@ protected:
 
 	//=======Widget========
 	UPROPERTY(EditAnywhere, Category="Widget")
-	TSubclassOf<UUserWidget> HUDPlayerWidgetClass;
+	TSubclassOf<UUserWidget> SwitcherWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UHUDPlayer> HUDPlayerWidget;
+	TObjectPtr<USwitcher> SwitcherWidget;
 
 	UPROPERTY(EditAnywhere, Category ="Input")
 	UInputAction* AttackAction;
 	
 	void Attack();
+
+
 };

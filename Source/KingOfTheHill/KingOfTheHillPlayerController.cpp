@@ -12,6 +12,7 @@
 #include "KingOfTheHill.h"
 #include "KingOfTheHillCharacter.h"
 #include "Widget/HUDPlayer.h"
+#include "Widget/Switcher.h"
 #include "Widgets/Input/SVirtualJoystick.h"
 
 AKingOfTheHillPlayerController::AKingOfTheHillPlayerController()
@@ -27,12 +28,12 @@ void AKingOfTheHillPlayerController::BeginPlay()
 	//==========Widget=============
 	if (!IsLocalController())return;
 
-	if (HUDPlayerWidgetClass)
+	if (SwitcherWidgetClass)
 	{
-		HUDPlayerWidget = CreateWidget<UHUDPlayer>(this, HUDPlayerWidgetClass);
-		if (HUDPlayerWidget)
+		SwitcherWidget = CreateWidget<USwitcher>(this, SwitcherWidgetClass);
+		if (SwitcherWidget)
 		{
-			HUDPlayerWidget->AddToViewport(0);
+			SwitcherWidget->AddToViewport(0);
 		}
 	}
 	
@@ -103,5 +104,13 @@ void AKingOfTheHillPlayerController::Attack()
 	if (MYCharacter)
 	{
 		MYCharacter->Server_Push();
+	}
+}
+
+void AKingOfTheHillPlayerController::Client_IniciarPartidaVisual_Implementation()
+{
+	if (SwitcherWidget) 
+	{
+		SwitcherWidget->ChangeWidget();
 	}
 }

@@ -22,10 +22,6 @@ public:
 
 	virtual void StartMatch() override;
 
-	FTimerHandle StartMatchTimer;
-
 	float MatchTime;
-
-	UPROPERTY(EditDefaultsOnly)
-	float MatchStart = 3;
+	
 };
