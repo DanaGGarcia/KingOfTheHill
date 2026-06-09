@@ -17,7 +17,7 @@ AKOTHGameMode::AKOTHGameMode()
 {
 	bDelayedStart = true;
 
-	MatchTime = 20;
+	MatchTime = 100;
 }
 
 void AKOTHGameMode::BeginPlay()
