@@ -9,11 +9,8 @@
 void UMenuLan::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
-
-	if (Button_Quit)
-	{
-		Button_Quit->OnClicked.AddDynamic(this, &UMenuLan::OnButtonQuitClicked);
-	}
+	
+	Button_Quit->OnClicked.AddDynamic(this, &UMenuLan::OnButtonQuitClicked);
 	
 	Button_Host->OnClicked.AddDynamic(this, &UMenuLan::OnButtonHostClicked);
 	Button_Join->OnClicked.AddDynamic(this, &UMenuLan::OnButtonJoinClicked);

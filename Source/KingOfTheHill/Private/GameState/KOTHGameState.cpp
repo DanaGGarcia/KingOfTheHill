@@ -44,10 +44,9 @@ void AKOTHGameState::AdvanceClock()
 		
 		for (AActor* Actor : Characters)
 		{
-			AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(Actor);
-			if (Character)
+			if (Actor && Actor->Implements<UPlayerInterface>())
 			{
-				Character->CancelAddPoints();
+				IPlayerInterface::Execute_CancelAddPoints(Actor);
 			}
 		}
 		
@@ -77,10 +76,9 @@ void AKOTHGameState::EndMatch()
 	//desactivo movimiento
 	for (AActor* Actor : AllCharacters)
 	{
-		AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(Actor);
-		if (Character)
+		if (Actor && Actor->Implements<UPlayerInterface>())
 		{
-			Character->DisableCharacterMovement();
+			IPlayerInterface::Execute_CancelMovement(Actor);
 		}
 	}
 	
@@ -107,7 +105,6 @@ void AKOTHGameState::EndMatch()
 		}
 	}
 	
-
 	if (bEmpate || Winner == nullptr)
 	{
 		WinnerText = "Empate!";
@@ -115,6 +112,18 @@ void AKOTHGameState::EndMatch()
 	else
 	{
 		WinnerText = FString::Printf(TEXT("¡El ganador es: %s!"),*Winner->GetPlayerName());
+	}
+
+	AKOTHGameMode* GM = Cast<AKOTHGameMode>(GetWorld()->GetAuthGameMode());
+	if (GM)
+	{
+		GetWorldTimerManager().SetTimer(
+	   RestartTimer,                 
+	   GM,                           
+	   &AKOTHGameMode::EndMatch,     
+	   3.f,                         
+	   false
+	   );
 	}
 }
 

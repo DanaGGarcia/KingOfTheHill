@@ -42,10 +42,9 @@ void APointZone::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if (!HasAuthority()) return;
 	
-	AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(OtherActor);
-	if (Character)
+	if (OtherActor && OtherActor->Implements<UPlayerInterface>())
 	{
-		Character->StartAddPoints();
+		IPlayerInterface::Execute_StartAddPoints(OtherActor);
 	}
 }
 
@@ -54,9 +53,8 @@ void APointZone::NotifyActorEndOverlap(AActor* OtherActor)
 	Super::NotifyActorEndOverlap(OtherActor);
 	if (!HasAuthority()) return;
 
-	AKingOfTheHillCharacter* Character = Cast<AKingOfTheHillCharacter>(OtherActor);
-	if (Character)
+	if (OtherActor && OtherActor->Implements<UPlayerInterface>())
 	{
-		Character->CancelAddPoints();
+		IPlayerInterface::Execute_CancelAddPoints(OtherActor);
 	}
 }

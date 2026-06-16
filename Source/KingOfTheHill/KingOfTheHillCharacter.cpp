@@ -131,23 +131,18 @@ void AKingOfTheHillCharacter::DoJumpEnd()
 }
 
 //=============== Game ===============
- void AKingOfTheHillCharacter::StartAddPoints()
- {
- 	GetWorldTimerManager().SetTimer(
- 		PointTimerHandle,
- 		this,
- 		&AKingOfTheHillCharacter::AddPoint,
- 		1.0f,
- 		true
- 	);
- }
+void AKingOfTheHillCharacter::StartAddPoints_Implementation()
+{
+	GetWorldTimerManager().SetTimer(
+		 PointTimerHandle,
+		 this,
+		 &AKingOfTheHillCharacter::AddPoint,
+		 1.0f,
+		 true
+	 );
+}
 
- void AKingOfTheHillCharacter::CancelAddPoints()
- {
- 	GetWorldTimerManager().ClearTimer(PointTimerHandle);
- }
-
- void AKingOfTheHillCharacter::AddPoint()
+void AKingOfTheHillCharacter::AddPoint()
  {
 	AKOTHGameState* GS = GetWorld()->GetGameState<AKOTHGameState>();
 	if (GS && GetPlayerState())
@@ -156,9 +151,10 @@ void AKingOfTheHillCharacter::DoJumpEnd()
 	}
  }
 
-void AKingOfTheHillCharacter::DisableCharacterMovement()
+void AKingOfTheHillCharacter::CancelAddPoints_Implementation()
 {
-	GetCharacterMovement()->DisableMovement();
+	IPlayerInterface::CancelAddPoints_Implementation();
+	GetWorldTimerManager().ClearTimer(PointTimerHandle);
 }
 
 void AKingOfTheHillCharacter::Server_Push_Implementation()
@@ -168,13 +164,12 @@ void AKingOfTheHillCharacter::Server_Push_Implementation()
 	GetWorldTimerManager().SetTimer(
 		TimerAttack,
 		this,
-		&AKingOfTheHillCharacter::Server_Empuje,
+		&AKingOfTheHillCharacter::Push,
 		0.35f,
 		false);
-	
 }
 
-void AKingOfTheHillCharacter::Server_Empuje_Implementation()
+void AKingOfTheHillCharacter::Push()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Empujo");
 	TArray<AActor*> HitActors;
@@ -184,7 +179,7 @@ void AKingOfTheHillCharacter::Server_Empuje_Implementation()
 	{
 		if (Actor && Actor != this)
 		{
-			AKingOfTheHillCharacter* OtherCharacter =Cast<AKingOfTheHillCharacter>(Actor);
+			ACharacter* OtherCharacter = Cast<ACharacter>(Actor);
 
 			if (OtherCharacter)
 			{
@@ -194,7 +189,6 @@ void AKingOfTheHillCharacter::Server_Empuje_Implementation()
 			}
 		}
 	}
-	
 }
 
 void AKingOfTheHillCharacter::Multicast_EmpujeAnimation_Implementation()
@@ -203,4 +197,10 @@ void AKingOfTheHillCharacter::Multicast_EmpujeAnimation_Implementation()
 	{
 		PlayAnimMontage(AttackMontageMelee);
 	}
+}
+
+void AKingOfTheHillCharacter::CancelMovement_Implementation()
+{
+	IPlayerInterface::CancelMovement_Implementation();
+	GetCharacterMovement()->DisableMovement();
 }

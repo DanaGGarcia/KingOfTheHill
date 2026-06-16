@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/PlayerInterface.h"
 #include "Logging/LogMacros.h"
 #include "KingOfTheHillCharacter.generated.h"
 
@@ -20,7 +21,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
  *  A basic first person character
  */
 UCLASS(abstract)
-class AKingOfTheHillCharacter : public ACharacter
+class AKingOfTheHillCharacter : public ACharacter, public IPlayerInterface
 {
 	GENERATED_BODY()
 
@@ -95,13 +96,12 @@ public:
 	
 	FTimerHandle PointTimerHandle;
 	
+	virtual  void StartAddPoints_Implementation();
+	virtual void CancelAddPoints_Implementation();
+	
 	void AddPoint();
-	
-	void StartAddPoints();
-	
-	void CancelAddPoints();
 
-	void DisableCharacterMovement();
+	virtual void CancelMovement_Implementation() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<UStaticMeshComponent> SwordMesh;
@@ -115,8 +115,8 @@ public:
 	UFUNCTION(BlueprintCallable,Server, Reliable, Category = "Combat")
 	void Server_Push();
 
-	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Combat")
-	void Server_Empuje();
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void Push();
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Combat")
 	void Multicast_EmpujeAnimation();

@@ -48,3 +48,10 @@ void AKOTHGameMode::StartMatch()
 		GS->StartGameClock(); 
 	}
 }
+
+void AKOTHGameMode::EndMatch()
+{
+	Super::EndMatch();
+
+	RestartGame();
+}

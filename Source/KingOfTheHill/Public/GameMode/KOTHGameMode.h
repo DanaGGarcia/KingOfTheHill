@@ -23,5 +23,6 @@ public:
 	virtual void StartMatch() override;
 
 	float MatchTime;
-	
+
+	virtual void EndMatch() override;
 };

@@ -38,4 +38,6 @@ public:
 
 	UFUNCTION()
 	void EndMatch();
+
+	FTimerHandle RestartTimer;
 };
